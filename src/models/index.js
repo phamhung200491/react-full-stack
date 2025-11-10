@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config() // thêm vào để chạy được biến env
 
 const fs = require('fs');
 const path = require('path');
