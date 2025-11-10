@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "hung",
+    "password": "123456",
+    "database": "hoidanit",
+    "host": "198.1.10.223",
+    "dialect": "mssql"
+  },
+  "test": {
+    "username": "hung",
+    "password": "123456",
+    "database": "database_development",
+    "host": "198.1.10.223",
+    "dialect": "mssql"
+  },
+  "production": {
+    "username": "hung",
+    "password": "123456",
+    "database": "database_development",
+    "host": "198.1.10.223",
+    "dialect": "mssql"
+  }
+}
