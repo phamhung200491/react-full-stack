@@ -37,6 +37,18 @@ let hashUserPassword = (password) => {
     })
 }
 
+let getAllUser = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = await db.User.findAll({ raw: true })
+            resolve(data)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
-    createNewUser: createNewUser
+    createNewUser: createNewUser,
+    getAllUser: getAllUser
 }
