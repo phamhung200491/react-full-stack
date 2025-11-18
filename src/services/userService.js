@@ -1,6 +1,8 @@
 import db from "../models/index"
 import bcrypt from 'bcryptjs'
 
+const salt = bcrypt.genSaltSync(10)
+
 let handleUserLogin = (email, password) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -53,6 +55,8 @@ let checkUserEmail = (userEmail) => {
                 raw: true
             })
 
+            console.log('check user: ', user)
+
             if (user) {
                 resolve(true)
             }
@@ -91,7 +95,123 @@ let getAllUser = (userId) => {
     })
 }
 
+let hashUserPassword = (password) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let hashPassword = bcrypt.hashSync(password, salt)
+            resolve(hashPassword)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+let createNewUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            //check email is exist ??
+            let check = await checkUserEmail(data.email)
+            if (check) {
+                resolve({
+                    errCode: 1,
+                    message: 'Your email is already in used. Plz try another email!',
+                })
+            }
+            else {
+                let hashPasswordFromBcrypt = await hashUserPassword(data.password)
+                await db.User.create({
+                    email: data.email,
+                    password: hashPasswordFromBcrypt,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    address: data.address,
+                    phoneNumber: data.phoneNumber,
+                    gender: data.gender === '1' ? true : false,
+                    roleId: data.roleId,
+                })
+
+                //let allUser = await db.User.findAll()
+                resolve({
+                    errCode: 0,
+                    message: 'OK',
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+let updateUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { id: data.id },
+                raw: false
+            })
+            if (user) {
+                user.firstName = data.firstName
+                user.lastName = data.lastName
+                user.address = data.address
+                user.address = data.address
+                user.phoneNumber = data.phoneNumber
+                user.gender = data.gender === '1' ? true : false
+                await user.save()
+                // await db.User.save({
+                //     firstName: data.firstName,
+                //     lastName: data.lastName,
+                //     address: data.address,
+                //     phoneNumber: data.phoneNumber,
+                //     gender: data.gender === '1' ? true : false,
+                // })
+                resolve({
+                    errCode: 0,
+                    message: 'Update user succeeds',
+                })
+            }
+            else {
+                resolve({
+                    errCode: 2,
+                    message: `User's not found!`,
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+let deleteUser = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { id: userId }
+            })
+            if (user) {
+                await db.User.destroy({
+                    where: { id: userId }
+                })
+                resolve({
+                    errCode: 0,
+                    message: 'Delete user OK',
+                })
+            }
+            else {
+                resolve({
+                    errCode: 1,
+                    message: `The user isn't exist`,
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     handleUserLogin: handleUserLogin,
-    getAllUser: getAllUser
+    getAllUser: getAllUser,
+    createNewUser: createNewUser,
+    updateUser: updateUser,
+    deleteUser: deleteUser,
 }
