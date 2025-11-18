@@ -15,20 +15,14 @@ let handleUserLogin = (email, password) => {
                     raw: true
                 })
                 if (user) {
-                    console.log('>>> user ', user)
-                    console.log('>>> password ', password)
-                    console.log('>>> user.password ', user.password)
                     //compare password
-                    let check = bcrypt.compareSync(password, user.password)
-                    console.log('>>> check ', check)
+                    let check = await bcrypt.compareSync(password, user.password)
                     //check = true
                     if (check) {
                         userData.errCode = 0
                         userData.errMessage = 'OK';
-                        console.log('>>> user ', user)
                         delete user.password;
                         userData.user = user
-                        console.log('>>> userData ', userData)
                     }
                     else {
                         userData.errCode = 3
@@ -71,6 +65,33 @@ let checkUserEmail = (userEmail) => {
     })
 }
 
+let getAllUser = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let users = ''
+            if (userId === 'ALL') {
+                users = await db.User.findAll({
+                    attributes: {
+                        exclude: ['password']
+                    },
+                })
+            }
+            if (userId && userId !== 'ALL') {
+                users = await db.User.findOne({
+                    where: { id: userId },
+                    attributes: {
+                        exclude: ['password']
+                    },
+                })
+            }
+            resolve(users)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
-    handleUserLogin: handleUserLogin
+    handleUserLogin: handleUserLogin,
+    getAllUser: getAllUser
 }

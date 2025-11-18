@@ -5,20 +5,26 @@
     "database": "hoidanit",
     "host": "198.1.10.223",
     "dialect": "mssql",
-    "logging": false
+    "logging": false,
+    "query": {
+      "raw": true
+    },
+    "timezone": "+07:00"
   },
   "test": {
     "username": "hung",
     "password": "123456",
     "database": "database_development",
     "host": "198.1.10.223",
-    "dialect": "mssql"
+    "dialect": "mssql",
+    "raw": true
   },
   "production": {
     "username": "hung",
     "password": "123456",
     "database": "database_development",
     "host": "198.1.10.223",
-    "dialect": "mssql"
+    "dialect": "mssql",
+    "raw": true
   }
 }
