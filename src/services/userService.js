@@ -114,7 +114,7 @@ let createNewUser = (data) => {
             if (check) {
                 resolve({
                     errCode: 1,
-                    message: 'Your email is already in used. Plz try another email!',
+                    errMessage: 'Your email is already in used. Plz try another email!',
                 })
             }
             else {
@@ -166,13 +166,13 @@ let updateUser = (data) => {
                 // })
                 resolve({
                     errCode: 0,
-                    message: 'Update user succeeds',
+                    errMessage: 'Update user succeeds',
                 })
             }
             else {
                 resolve({
                     errCode: 2,
-                    message: `User's not found!`,
+                    errMessage: `User's not found!`,
                 })
             }
         } catch (error) {
@@ -193,13 +193,13 @@ let deleteUser = (userId) => {
                 })
                 resolve({
                     errCode: 0,
-                    message: 'Delete user OK',
+                    errMessage: 'Delete user OK',
                 })
             }
             else {
                 resolve({
                     errCode: 1,
-                    message: `The user isn't exist`,
+                    errMessage: `The user isn't exist`,
                 })
             }
         } catch (error) {
