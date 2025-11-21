@@ -143,6 +143,7 @@ let createNewUser = (data) => {
 }
 
 let updateUser = (data) => {
+    console.log(data)
     return new Promise(async (resolve, reject) => {
         try {
             let user = await db.User.findOne({
@@ -156,6 +157,7 @@ let updateUser = (data) => {
                 user.address = data.address
                 user.phoneNumber = data.phoneNumber
                 user.gender = data.gender === '1' ? true : false
+                user.roleId = data.roleId
                 await user.save()
                 // await db.User.save({
                 //     firstName: data.firstName,
