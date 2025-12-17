@@ -12,7 +12,7 @@ let handleUserLogin = (email, password) => {
                 //user already exist
 
                 let user = await db.User.findOne({
-                    attributes: ['email', 'roleId', 'password'],
+                    attributes: ['email', 'firstName', 'lastName', 'roleId', 'password'],
                     where: { email: email },
                     raw: true
                 })
@@ -126,14 +126,16 @@ let createNewUser = (data) => {
                     lastName: data.lastName,
                     address: data.address,
                     phoneNumber: data.phoneNumber,
-                    gender: data.gender === '1' ? true : false,
+                    gender: data.gender,
+                    //image: data.image,
                     roleId: data.roleId,
+                    positionId: data.positionId
                 })
 
                 //let allUser = await db.User.findAll()
                 resolve({
                     errCode: 0,
-                    message: 'OK',
+                    errMessage: 'OK',
                 })
             }
         } catch (error) {
@@ -156,7 +158,7 @@ let updateUser = (data) => {
                 user.address = data.address
                 user.address = data.address
                 user.phoneNumber = data.phoneNumber
-                user.gender = data.gender === '1' ? true : false
+                user.gender = data.gender
                 user.roleId = data.roleId
                 await user.save()
                 // await db.User.save({
