@@ -34,6 +34,19 @@ let handleGetAllUser = async (req, res) => {
         })
     }
     let users = await userService.getAllUser(id)
+
+    console.log('check user ', users)
+
+    // convert image buffer -> base64 (nếu cần)
+    if (users && Array.isArray(users)) {
+        users = users.map(user => {
+            if (user.image) {
+                user.image = user.image.toString('base64');
+            }
+            return user;
+        });
+    }
+
     return res.status(200).json({
         errCode: 0,
         errMessage: 'OK',

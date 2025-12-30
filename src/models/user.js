@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     phoneNumber: DataTypes.STRING,
     gender: DataTypes.STRING,
-    image: DataTypes.STRING,
+    image: {
+      type: DataTypes.BLOB('long'), // → VARBINARY(MAX)
+      allowNull: true
+    },
     roleId: DataTypes.STRING,
     positionId: DataTypes.STRING,
   }, {

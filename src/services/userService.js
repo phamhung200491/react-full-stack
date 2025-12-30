@@ -88,6 +88,9 @@ let getAllUser = (userId) => {
                     },
                 })
             }
+
+            console.log('check user: ', users)
+
             resolve(users)
         } catch (error) {
             reject(error)
@@ -106,6 +109,20 @@ let hashUserPassword = (password) => {
     })
 }
 
+let imageBuffer = (avatar) => {
+    let image = null
+    if (avatar) {
+        image = Buffer.from(
+            avatar.replace(/^data:image\/\w+;base64,/, ''),
+            'base64'
+        )
+    }
+
+    console.log('check image ', image)
+
+    return image
+}
+
 let createNewUser = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -119,7 +136,21 @@ let createNewUser = (data) => {
             }
             else {
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password)
-                await db.User.create({
+
+                // await db.User.create({
+                //     email: data.email,
+                //     password: hashPasswordFromBcrypt,
+                //     firstName: data.firstName,
+                //     lastName: data.lastName,
+                //     address: data.address,
+                //     phoneNumber: data.phoneNumber,
+                //     image: data.image ? imageBuffer(data.image) : null,
+                //     gender: data.gender,
+                //     roleId: data.roleId,
+                //     positionId: data.positionId
+                // })
+
+                const userData = {
                     email: data.email,
                     password: hashPasswordFromBcrypt,
                     firstName: data.firstName,
@@ -127,10 +158,15 @@ let createNewUser = (data) => {
                     address: data.address,
                     phoneNumber: data.phoneNumber,
                     gender: data.gender,
-                    //image: data.image,
                     roleId: data.roleId,
                     positionId: data.positionId
-                })
+                };
+
+                if (data.image) {
+                    userData.image = imageBuffer(data.image);
+                }
+
+                await db.User.create(userData);
 
                 //let allUser = await db.User.findAll()
                 resolve({
@@ -148,6 +184,12 @@ let updateUser = (data) => {
     console.log(data)
     return new Promise(async (resolve, reject) => {
         try {
+            if (!data.id || !data.roleId || !data.positionId || !data.gender) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Missing required parameters'
+                })
+            }
             let user = await db.User.findOne({
                 where: { id: data.id },
                 raw: false
@@ -156,10 +198,14 @@ let updateUser = (data) => {
                 user.firstName = data.firstName
                 user.lastName = data.lastName
                 user.address = data.address
-                user.address = data.address
                 user.phoneNumber = data.phoneNumber
+                if (data.image) {
+                    user.image = imageBuffer(data.image)
+                }
+                console.log('check update user image: ', data.image)
                 user.gender = data.gender
                 user.roleId = data.roleId
+                user.positionId = data.positionId
                 await user.save()
                 // await db.User.save({
                 //     firstName: data.firstName,
