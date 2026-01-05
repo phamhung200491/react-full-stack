@@ -47,6 +47,8 @@ let handleGetAllUser = async (req, res) => {
         });
     }
 
+    //console.log('check user controller image', users)
+
     return res.status(200).json({
         errCode: 0,
         errMessage: 'OK',
